@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IT-ATELIER — Цифровые продукты. Ручная работа.</title>
-    <meta name="description" content="IT-Atelier — бутиковая технологическая мастерская. Создаём цифровые продукты индивидуального пошива.">
+    <title>DIGITAL-ATELIER — Цифровые продукты. Ручная работа.</title>
+    <meta name="description" content="Digital-Atelier — бутиковая технологическая мастерская. Создаём цифровые продукты индивидуального пошива.">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
@@ -313,6 +313,37 @@
             transform: scale(1.02);
         }
 
+        .contact-links {
+            display: flex;
+            gap: 1.2rem;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .contact .tg-btn {
+            font-family: var(--sans);
+            font-size: 1rem;
+            font-weight: 400;
+            color: var(--cream);
+            text-decoration: none;
+            letter-spacing: 0.08em;
+            padding: 1rem 2.5rem;
+            border: 1px solid rgba(42, 174, 226, 0.35);
+            border-radius: 100px;
+            transition: all 0.4s ease;
+            backdrop-filter: blur(10px);
+            background: rgba(42, 174, 226, 0.06);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .contact .tg-btn:hover {
+            background: rgba(42, 174, 226, 0.15);
+            border-color: rgba(42, 174, 226, 0.7);
+            transform: scale(1.02);
+        }
+
         /* === FOOTER === */
         footer {
             text-align: center;
@@ -361,7 +392,7 @@
 </head>
 <body>
     <nav>
-        <div class="logo">IT-Atelier</div>
+        <div class="logo">Digital-Atelier</div>
         <div class="nav-links">
             <a href="#philosophy">Философия</a>
             <a href="#process">Процесс</a>
@@ -371,7 +402,7 @@
     </nav>
 
     <section class="hero">
-        <h1>IT-ATELIER</h1>
+        <h1>DIGITAL-ATELIER</h1>
         <div class="tagline">Цифровые продукты. Ручная работа.</div>
         <div class="scroll-hint">Scroll</div>
     </section>
@@ -438,12 +469,18 @@
         <div class="reveal">
             <h2>Обсудим ваш проект</h2>
             <p>Расскажите нам идею — мы подберём крой.</p>
-            <a href="mailto:hello@it-atelier.vision" class="email">hello@it-atelier.vision</a>
+            <div class="contact-links">
+                <a href="mailto:hello@it-atelier.vision" class="email">hello@it-atelier.vision</a>
+                <a href="https://t.me/zephyr_muldash" class="tg-btn" target="_blank">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.562 8.248l-2.01 9.47c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12l-6.871 4.326-2.962-.924c-.643-.204-.657-.643.136-.953l11.57-4.461c.537-.194 1.006.131.873.751z"/></svg>
+                    Telegram
+                </a>
+            </div>
         </div>
     </section>
 
     <footer>
-        <p>© 2026 IT-ATELIER</p>
+        <p>© 2026 DIGITAL-ATELIER</p>
     </footer>
 
     <script>

@@ -543,10 +543,17 @@ function addFromModal() {
 }
 
 function checkout() {
-  if (tg) {
-    tg.showAlert('⭐ Оплата Stars\n\nЭта функция будет доступна после подключения бота.');
+  const items = Object.entries(cart).map(([id, qty]) => {
+    const p = PRODUCTS.find(x => x.id == id);
+    return { id: p.id, name: p.name, price: p.price, qty };
+  });
+  const total = items.reduce((s, i) => s + i.price * i.qty, 0);
+  const order = JSON.stringify({ items, total });
+
+  if (tg && tg.sendData) {
+    tg.sendData(order);
   } else {
-    alert('Stars оплата — в разработке');
+    alert('Откройте магазин через Telegram бота для оплаты Stars');
   }
 }
 

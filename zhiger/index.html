@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Zhiger — Алкоголь с доставкой</title>
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<style>
+  :root {
+    --bg: #111110;
+    --bg2: #1c1b19;
+    --card: #232219;
+    --gold: #c9a84c;
+    --gold2: #e8c97a;
+    --amber: #d4761a;
+    --text: #f0e6c8;
+    --muted: #8a7f6a;
+    --border: #2e2b22;
+    --green: #4caf7a;
+    --radius: 14px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, 'SF Pro Display', 'Segoe UI', sans-serif;
+    min-height: 100vh;
+    padding-bottom: 90px;
+    overflow-x: hidden;
+  }
+
+  /* HEADER */
+  .header {
+    background: linear-gradient(135deg, #1a1600 0%, #0f0e0b 100%);
+    border-bottom: 1px solid var(--border);
+    padding: 14px 16px 10px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .header-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+  }
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .logo-icon {
+    font-size: 22px;
+    filter: drop-shadow(0 0 8px rgba(201,168,76,0.6));
+  }
+  .logo-text {
+    font-size: 18px;
+    font-weight: 700;
+    background: linear-gradient(135deg, var(--gold), var(--gold2));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    letter-spacing: 0.5px;
+  }
+  .logo-sub {
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+  .header-badge {
+    display: flex;
+    gap: 6px;
+  }
+  .badge {
+    background: var(--border);
+    border: 1px solid var(--gold);
+    color: var(--gold);
+    font-size: 10px;
+    font-weight: 600;
+    padding: 3px 8px;
+    border-radius: 20px;
+    letter-spacing: 0.5px;
+  }
+
+  /* CATEGORIES */
+  .cats {
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    padding-bottom: 2px;
+    scrollbar-width: none;
+  }
+  .cats::-webkit-scrollbar { display: none; }
+  .cat {
+    white-space: nowrap;
+    background: var(--card);
+    border: 1px solid var(--border);
+    color: var(--muted);
+    font-size: 13px;
+    font-weight: 500;
+    padding: 7px 14px;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: all .2s;
+    flex-shrink: 0;
+  }
+  .cat.active {
+    background: linear-gradient(135deg, #3a2e0a, #2a2008);
+    border-color: var(--gold);
+    color: var(--gold2);
+  }
+
+  /* GRID */
+  .section-title {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--muted);
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    padding: 16px 16px 8px;
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    padding: 0 12px;
+  }
+
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+    cursor: pointer;
+    transition: transform .1s, border-color .2s;
+    position: relative;
+  }
+  .card:active { transform: scale(0.97); }
+  .card.in-cart { border-color: var(--gold); }
+
+  .card-img {
+    background: linear-gradient(145deg, #1e1b12, #2a2618);
+    height: 120px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 52px;
+    position: relative;
+  }
+  .card-badge-new {
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    background: var(--amber);
+    color: #fff;
+    font-size: 9px;
+    font-weight: 700;
+    padding: 2px 6px;
+    border-radius: 6px;
+    letter-spacing: 0.5px;
+  }
+  .card-body {
+    padding: 10px 10px 8px;
+  }
+  .card-name {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 2px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .card-desc {
+    font-size: 11px;
+    color: var(--muted);
+    margin-bottom: 8px;
+  }
+  .card-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .price {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--gold2);
+  }
+  .price span { font-size: 11px; }
+
+  .btn-add {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    border: 1.5px solid var(--gold);
+    background: transparent;
+    color: var(--gold);
+    font-size: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all .15s;
+    font-weight: 300;
+  }
+  .btn-add.added {
+    background: var(--gold);
+    color: var(--bg);
+  }
+
+  .qty-control {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .qty-btn {
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    border: 1px solid var(--border);
+    background: var(--bg2);
+    color: var(--text);
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+  }
+  .qty-num {
+    font-size: 13px;
+    font-weight: 600;
+    min-width: 16px;
+    text-align: center;
+    color: var(--gold2);
+  }
+
+  /* CART BAR */
+  .cart-bar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: linear-gradient(135deg, #1e1a0a, #141210);
+    border-top: 1px solid var(--gold);
+    padding: 12px 16px 20px;
+    z-index: 200;
+    transition: transform .3s cubic-bezier(.4,0,.2,1);
+  }
+  .cart-bar.hidden { transform: translateY(120%); }
+  .cart-bar-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 10px;
+  }
+  .cart-info {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .cart-count-badge {
+    background: var(--gold);
+    color: var(--bg);
+    font-size: 11px;
+    font-weight: 700;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .cart-label {
+    font-size: 13px;
+    color: var(--muted);
+  }
+  .cart-total {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--gold2);
+  }
+  .cart-total-star { font-size: 13px; }
+  .btn-checkout {
+    width: 100%;
+    background: linear-gradient(135deg, var(--gold), var(--amber));
+    color: #0f0e0b;
+    border: none;
+    font-size: 15px;
+    font-weight: 700;
+    padding: 14px;
+    border-radius: 12px;
+    cursor: pointer;
+    letter-spacing: 0.3px;
+    transition: opacity .15s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+  }
+  .btn-checkout:active { opacity: 0.85; }
+
+  /* MODAL */
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.8);
+    z-index: 300;
+    display: flex;
+    align-items: flex-end;
+    opacity: 0;
+    transition: opacity .25s;
+    pointer-events: none;
+  }
+  .modal-overlay.show {
+    opacity: 1;
+    pointer-events: all;
+  }
+  .modal {
+    background: var(--bg2);
+    border-top: 1px solid var(--border);
+    border-radius: 20px 20px 0 0;
+    width: 100%;
+    padding: 20px 20px 40px;
+    transform: translateY(100%);
+    transition: transform .3s cubic-bezier(.4,0,.2,1);
+  }
+  .modal-overlay.show .modal {
+    transform: translateY(0);
+  }
+  .modal-handle {
+    width: 36px;
+    height: 4px;
+    background: var(--border);
+    border-radius: 2px;
+    margin: 0 auto 16px;
+  }
+  .modal-img { font-size: 80px; text-align: center; margin-bottom: 12px; }
+  .modal-name { font-size: 22px; font-weight: 700; margin-bottom: 4px; }
+  .modal-meta { color: var(--muted); font-size: 13px; margin-bottom: 12px; }
+  .modal-desc { font-size: 14px; line-height: 1.6; color: #c8bea0; margin-bottom: 20px; }
+  .modal-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+  }
+  .modal-price { font-size: 24px; font-weight: 700; color: var(--gold2); }
+  .btn-modal-add {
+    flex: 1;
+    background: linear-gradient(135deg, var(--gold), var(--amber));
+    color: #0f0e0b;
+    border: none;
+    font-size: 15px;
+    font-weight: 700;
+    padding: 14px;
+    border-radius: 12px;
+    cursor: pointer;
+  }
+
+  /* EMPTY */
+  .empty {
+    text-align: center;
+    padding: 60px 20px;
+    color: var(--muted);
+  }
+  .empty-icon { font-size: 48px; margin-bottom: 12px; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-top">
+    <div class="logo">
+      <div class="logo-icon">🍷</div>
+      <div>
+        <div class="logo-text">ZHIGER</div>
+        <div class="logo-sub">Казахский дух · Доставка</div>
+      </div>
+    </div>
+    <div class="header-badge">
+      <div class="badge">18+</div>
+      <div class="badge">★ Stars</div>
+    </div>
+  </div>
+
+  <div class="cats" id="cats">
+    <div class="cat active" data-cat="all">Все товары</div>
+    <div class="cat" data-cat="whisky">🥃 Виски</div>
+    <div class="cat" data-cat="wine">🍷 Вино</div>
+    <div class="cat" data-cat="vodka">🫙 Водка</div>
+    <div class="cat" data-cat="beer">🍺 Пиво</div>
+    <div class="cat" data-cat="rum">🏴‍☠️ Ром</div>
+    <div class="cat" data-cat="gin">🌿 Джин</div>
+  </div>
+</div>
+
+<div class="section-title" id="section-title">Все товары</div>
+<div class="grid" id="grid"></div>
+
+<!-- Modal -->
+<div class="modal-overlay" id="modal-overlay" onclick="closeModal(event)">
+  <div class="modal" id="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-img" id="m-img"></div>
+    <div class="modal-name" id="m-name"></div>
+    <div class="modal-meta" id="m-meta"></div>
+    <div class="modal-desc" id="m-desc"></div>
+    <div class="modal-footer">
+      <div class="modal-price" id="m-price"></div>
+      <button class="btn-modal-add" id="m-btn" onclick="addFromModal()">В корзину</button>
+    </div>
+  </div>
+</div>
+
+<!-- Cart Bar -->
+<div class="cart-bar hidden" id="cart-bar">
+  <div class="cart-bar-inner">
+    <div class="cart-info">
+      <div class="cart-count-badge" id="cart-count">0</div>
+      <div class="cart-label">товара в корзине</div>
+    </div>
+    <div class="cart-total"><span class="cart-total-star">⭐</span> <span id="cart-total">0</span></div>
+  </div>
+  <button class="btn-checkout" onclick="checkout()">
+    ⭐ Оплатить Stars
+  </button>
+</div>
+
+<script>
+const tg = window.Telegram?.WebApp;
+if (tg) { tg.expand(); tg.setHeaderColor('#111110'); }
+
+const PRODUCTS = [
+  { id:1, cat:'whisky', icon:'🥃', name:'Jameson 12y',  ml:'750мл', vol:'40%', price:490,  badge:'ХИТ',  desc:'Ирландский купажированный виски с нотками ванили и ореха. Тройная дистилляция.' },
+  { id:2, cat:'whisky', icon:'🥃', name:'Glenfiddich',  ml:'700мл', vol:'40%', price:1200, badge:null,    desc:'Односолодовый шотландский виски 12 лет. Груша, дуб, сливочная карамель.' },
+  { id:3, cat:'whisky', icon:'🥃', name:'Jack Daniel\'s',ml:'700мл', vol:'40%', price:380,  badge:null,    desc:'Теннессийский виски с угольной фильтрацией. Мягкий, с ванилью и карамелью.' },
+  { id:4, cat:'wine',   icon:'🍷', name:'Malbec 2021',  ml:'750мл', vol:'14%', price:320,  badge:null,    desc:'Аргентинское красное вино. Черника, слива, тёмный шоколад. Мендоса.' },
+  { id:5, cat:'wine',   icon:'🍾', name:'Prosecco DOC',  ml:'750мл', vol:'11%', price:480,  badge:'НОВИНКА',desc:'Итальянское игристое вино. Яблоко, груша, белые цветы. Идеально для праздника.' },
+  { id:6, cat:'wine',   icon:'🍷', name:'Chianti DOCG',  ml:'750мл', vol:'13%', price:290,  badge:null,    desc:'Классическое тосканское вино. Вишня, специи, лёгкая терпкость.' },
+  { id:7, cat:'vodka',  icon:'🫙', name:'Beluga Noble', ml:'700мл', vol:'40%', price:890,  badge:'ПРЕМИУМ',desc:'Российская водка премиум класса. Кристальная чистота, мягкий вкус.' },
+  { id:8, cat:'vodka',  icon:'🫙', name:'Grey Goose',   ml:'700мл', vol:'40%', price:750,  badge:null,    desc:'Французская водка из зимней пшеницы. Шёлковая текстура, чистый финиш.' },
+  { id:9, cat:'vodka',  icon:'🫙', name:'Absolut',      ml:'700мл', vol:'40%', price:340,  badge:null,    desc:'Шведская водка. Без добавок, натуральный вкус ржаного хлеба.' },
+  { id:10,cat:'beer',   icon:'🍺', name:'Guinness 6pk', ml:'6×440мл',vol:'4.2%',price:280, badge:null,    desc:'Ирландский тёмный стаут. Кофе, горький шоколад, кремовая пена.' },
+  { id:11,cat:'beer',   icon:'🍺', name:'Corona pack',  ml:'6×355мл',vol:'4.5%',price:250, badge:'ХИТ',   desc:'Мексиканское лагер. Свежесть, лёгкая горчинка. Подавать с лаймом.' },
+  { id:12,cat:'rum',    icon:'🏴‍☠️', name:'Bacardi Gold', ml:'700мл', vol:'37.5%',price:380, badge:null,   desc:'Кубинский золотистый ром. Ваниль, миндаль, сухофрукты. Для коктейлей.' },
+  { id:13,cat:'rum',    icon:'🏴‍☠️', name:'Capt. Morgan', ml:'700мл', vol:'35%', price:400,  badge:null,   desc:'Ямайский пряный ром. Карамель, ваниль, корица. Основа для Mojito.' },
+  { id:14,cat:'gin',    icon:'🌿', name:'Hendrick\'s',  ml:'700мл', vol:'44%', price:680,  badge:'ТОП',   desc:'Шотландский джин с розой и огурцом. Необычный, элегантный, флоральный.' },
+  { id:15,cat:'gin',    icon:'🌿', name:'Bombay Sapph.',ml:'700мл', vol:'47%', price:520,  badge:null,    desc:'Лондонский джин. 10 ботаников, можжевельник, кориандр, цитрус.' },
+];
+
+let cart = {};
+let currentCat = 'all';
+let modalProduct = null;
+
+function filtered() {
+  return currentCat === 'all' ? PRODUCTS : PRODUCTS.filter(p => p.cat === currentCat);
+}
+
+function render() {
+  const grid = document.getElementById('grid');
+  const prods = filtered();
+  if (!prods.length) {
+    grid.innerHTML = '<div class="empty" style="grid-column:1/-1"><div class="empty-icon">📦</div>Нет товаров</div>';
+    return;
+  }
+  grid.innerHTML = prods.map(p => {
+    const qty = cart[p.id] || 0;
+    const inCart = qty > 0;
+    return `
+    <div class="card ${inCart?'in-cart':''}" onclick="openModal(${p.id})">
+      <div class="card-img">
+        ${p.badge ? `<div class="card-badge-new">${p.badge}</div>` : ''}
+        ${p.icon}
+      </div>
+      <div class="card-body">
+        <div class="card-name">${p.name}</div>
+        <div class="card-desc">${p.ml} · ${p.vol}</div>
+        <div class="card-footer">
+          <div class="price">⭐<b>${p.price}</b></div>
+          ${inCart
+            ? `<div class="qty-control" onclick="event.stopPropagation()">
+                <div class="qty-btn" onclick="changeQty(${p.id},-1)">−</div>
+                <div class="qty-num">${qty}</div>
+                <div class="qty-btn" onclick="changeQty(${p.id},1)">+</div>
+               </div>`
+            : `<button class="btn-add" onclick="event.stopPropagation();changeQty(${p.id},1)">+</button>`
+          }
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function changeQty(id, delta) {
+  cart[id] = Math.max(0, (cart[id]||0) + delta);
+  if (cart[id] === 0) delete cart[id];
+  updateCart();
+  render();
+}
+
+function updateCart() {
+  const count = Object.values(cart).reduce((a,b) => a+b, 0);
+  const total = Object.entries(cart).reduce((sum,[id,qty]) => {
+    const p = PRODUCTS.find(x=>x.id==id);
+    return sum + p.price * qty;
+  }, 0);
+  document.getElementById('cart-count').textContent = count;
+  document.getElementById('cart-total').textContent = total.toLocaleString();
+  const bar = document.getElementById('cart-bar');
+  bar.classList.toggle('hidden', count === 0);
+}
+
+function openModal(id) {
+  modalProduct = PRODUCTS.find(p => p.id === id);
+  document.getElementById('m-img').textContent = modalProduct.icon;
+  document.getElementById('m-name').textContent = modalProduct.name;
+  document.getElementById('m-meta').textContent = `${modalProduct.ml} · ${modalProduct.vol}`;
+  document.getElementById('m-desc').textContent = modalProduct.desc;
+  document.getElementById('m-price').innerHTML = `⭐ ${modalProduct.price}`;
+  const inCart = cart[modalProduct.id] > 0;
+  document.getElementById('m-btn').textContent = inCart ? '✓ В корзине' : 'В корзину';
+  document.getElementById('modal-overlay').classList.add('show');
+}
+
+function closeModal(e) {
+  if (e.target === document.getElementById('modal-overlay')) {
+    document.getElementById('modal-overlay').classList.remove('show');
+    modalProduct = null;
+  }
+}
+
+function addFromModal() {
+  if (modalProduct) {
+    changeQty(modalProduct.id, 1);
+    document.getElementById('m-btn').textContent = '✓ В корзине';
+    setTimeout(() => {
+      document.getElementById('modal-overlay').classList.remove('show');
+    }, 400);
+  }
+}
+
+function checkout() {
+  const items = Object.entries(cart).map(([id, qty]) => {
+    const p = PRODUCTS.find(x => x.id == id);
+    return { id: p.id, name: p.name, price: p.price, qty };
+  });
+  const total = items.reduce((s, i) => s + i.price * i.qty, 0);
+  const order = JSON.stringify({ items, total });
+
+  if (tg && tg.sendData) {
+    tg.sendData(order);
+  } else {
+    alert('Откройте магазин через Telegram бота для оплаты Stars');
+  }
+}
+
+// Category tabs
+document.getElementById('cats').addEventListener('click', e => {
+  const cat = e.target.closest('.cat');
+  if (!cat) return;
+  document.querySelectorAll('.cat').forEach(c => c.classList.remove('active'));
+  cat.classList.add('active');
+  currentCat = cat.dataset.cat;
+  const titles = {all:'Все товары',whisky:'🥃 Виски',wine:'🍷 Вино',vodka:'🫙 Водка',beer:'🍺 Пиво',rum:'🏴‍☠️ Ром',gin:'🌿 Джин'};
+  document.getElementById('section-title').textContent = titles[currentCat];
+  render();
+});
+
+render();
+</script>
+</body>
+</html>

@@ -2,6 +2,7 @@
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
+<link rel="manifest" href="/digital-atelier/zhiger/manifest.json">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 <title>Zhiger — Алкоголь с доставкой</title>
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
@@ -360,7 +361,30 @@
     cursor: pointer;
   }
 
-  /* EMPTY */
+  /* === LIGHT THEME === */
+  @media (prefers-color-scheme: light) {
+    :root {
+      --bg: #f5f0eb;
+      --bg2: #ede6de;
+      --card: #ffffff;
+      --gold: #8b1a1a;
+      --gold2: #c0392b;
+      --amber: #8b1a1a;
+      --text: #1a0808;
+      --muted: #7a5050;
+      --border: #d4b8b0;
+      --green: #1a6a4a;
+    }
+    .header { background: linear-gradient(135deg, #ede6de 0%, #f5f0eb 100%) !important; }
+    .card-img { background: linear-gradient(145deg, #f0e8e0, #ede6de) !important; }
+    .cart-bar { background: linear-gradient(135deg, #ede6de, #f5f0eb) !important; }
+    .cat.active { background: linear-gradient(135deg, #f0d8d0, #e8ccc4) !important; }
+    .btn-checkout { color: #fff !important; }
+    .modal { background: #f5f0eb !important; }
+    body { background: #f5f0eb; color: #1a0808; }
+  }
+
+
   .empty {
     text-align: center;
     padding: 60px 20px;

@@ -2,6 +2,7 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
+    <link rel="manifest" href="/digital-atelier/manifest.json">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DIGITAL-ATELIER — Цифровые продукты. Ручная работа.</title>
     <meta name="description" content="Digital-Atelier — бутиковая технологическая мастерская. Создаём цифровые продукты индивидуального пошива.">
@@ -377,6 +378,28 @@
         .reveal.active {
             opacity: 1;
             transform: translateY(0);
+        }
+
+        /* === LIGHT THEME === */
+        @media (prefers-color-scheme: light) {
+            :root {
+                --bg: #f8f5f0;
+                --bg-subtle: #eeeae3;
+                --cream: #1a1712;
+                --cream-dim: #5a5448;
+                --accent: #7a6040;
+                --glass: rgba(26, 23, 18, 0.04);
+                --glass-border: rgba(26, 23, 18, 0.12);
+            }
+            body { background: #f8f5f0; }
+            nav { background: rgba(248, 245, 240, 0.85); border-bottom-color: rgba(26,23,18,0.1); }
+            .process-card { background: rgba(26,23,18,0.04); border-color: rgba(26,23,18,0.1); }
+            .process-card:hover { background: rgba(26,23,18,0.08); }
+            .direction-row:hover { border-color: rgba(26,23,18,0.25); }
+            .contact .email { background: rgba(26,23,18,0.04); border-color: rgba(26,23,18,0.15); }
+            .contact .tg-btn { background: rgba(42,174,226,0.06); }
+            footer { border-top-color: rgba(26,23,18,0.1); }
+            .hero::before { background: radial-gradient(circle, rgba(122,96,64,0.08) 0%, transparent 70%); }
         }
 
         /* === RESPONSIVE === */
